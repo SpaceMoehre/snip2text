@@ -34,15 +34,15 @@ jobs:
       - name: Build release binary
         run: cargo build --release --target x86_64-pc-windows-msvc
 
-      - name: Package binary
+      - name: Rename binary
         run: |
           $tag = "${{ github.ref_name }}"
-          $archive = "snip2text-$tag-x86_64-windows.zip"
-          Compress-Archive -Path "target\x86_64-pc-windows-msvc\release\snip2text.exe" -DestinationPath $archive
-          echo "ARCHIVE=$archive" >> $env:GITHUB_ENV
+          $exe = "snip2text-$tag-x86_64-windows.exe"
+          Copy-Item "target\x86_64-pc-windows-msvc\release\snip2text.exe" $exe
+          echo "EXE=$exe" >> $env:GITHUB_ENV
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ env.ARCHIVE }}
+          files: ${{ env.EXE }}
           generate_release_notes: true
